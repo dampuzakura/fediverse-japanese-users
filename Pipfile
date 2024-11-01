@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 requests = "*"
+"mastodon.py" = "*"
 
 [dev-packages]
 
