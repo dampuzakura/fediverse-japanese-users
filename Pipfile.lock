@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3d90e0783ddbb3dfe884156bfa763a5eb65f005bd842b4044ba8f60139296458"
+            "sha256": "96b9a7537d900ee848f66c51939b473ec79cabf429423e986c8a991587fe13e2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -165,6 +165,12 @@
                 "sha256:4a64cb94abadd6add73e4b8eafdb5c466048fa5f638284fd2189034104d4687e"
             ],
             "version": "==1.8.1"
+        },
+        "misskey.py": {
+            "hashes": [
+                "sha256:d118891d0cd59d7e8942870ab2145c78221ec9ea0c9a79e309a473f0a8db96fe"
+            ],
+            "version": "==4.1.0"
         },
         "python-dateutil": {
             "hashes": [
