@@ -11,3 +11,6 @@ requests = "*"
 [requires]
 python_version = "3.12"
 python_full_version = "3.12.6"
+
+[scripts]
+servers = "python servers.py"
