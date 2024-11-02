@@ -16,5 +16,6 @@ python_full_version = "3.12.6"
 
 [scripts]
 software = "python software.py"
+software_names = "python software_names.py"
 servers = "python servers.py"
 filter = "python filter.py"
