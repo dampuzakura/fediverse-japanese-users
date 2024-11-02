@@ -4,52 +4,44 @@ import os
 from datetime import datetime
 
 # Fediverseサーバーの情報を取得する関数
-def fetch_servers(limit=40, total=200):
-  servers = [] # サーバーリストの初期化
-  next_cursor = None # 次のカーソルの初期化
+def fetch_servers(limit=40, total=40):
+  servers = []
+  next_cursor = None
 
   while len(servers) < total:
-    params = {'limit': limit} # リクエストパラメータの設定
+    params = {'limit': limit}
     if next_cursor:
-      params['cursor'] = next_cursor # 次のカーソルを追加
+      params['cursor'] = next_cursor
 
-    # サーバー情報を取得
     response = requests.get('https://api.fedidb.org/v1/servers', params=params)
 
     if response.status_code != 200:
-      # エラーが発生した場合は処理を終了
       print(f"データ取得エラー: {response.status_code}")
       break
 
     data = response.json()
-    servers.extend(data['data']) # サーバーデータをリストに追加
+    servers.extend(data['data'])
 
-    # 次のカーソルを取得
     next_cursor = data['meta'].get('next_cursor')
     if not next_cursor:
-      # 次のカーソルがなければループを終了
       break
 
-  return servers[:total] # 指定された総数までのサーバーデータを返す
+  return servers[:total]
 
 # データをJSONファイルに保存する関数
-def save_to_json(data):
-  # 保存先ディレクトリを作成
+def save_json(data):
   os.makedirs('servers', exist_ok=True)
 
-  # 現在の日付を取得してファイル名を作成
   date_str = datetime.now().strftime('%Y%m%d%H%M%S')
   filename = f'servers/{date_str}.json'
 
-  # JSONファイルに書き込み
   with open(filename, 'w', encoding='utf-8') as f:
-    json.dump(data, f, ensure_ascii=False, indent=4)
+    json.dump(data, f, ensure_ascii=False, indent=2)
 
 def main():
-  # サーバーデータを取得して保存
-  server_data = fetch_servers(limit=40, total=2000) # サーバーデータを取得
-  save_to_json(server_data) # サーバーデータをJSONに保存
-  print(f"{len(server_data)}件のサーバーを取得して保存しました。") # 処理結果を出力
+  server_data = fetch_servers(limit=40, total=2000)
+  save_json(server_data)
+  print(f"{len(server_data)}件のサーバーを取得して保存しました。")
 
 if __name__ == "__main__":
   main()
