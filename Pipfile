@@ -8,6 +8,7 @@ requests = "*"
 "mastodon.py" = "*"
 "misskey.py" = "*"
 tqdm = "*"
+langdetect = "*"
 
 [dev-packages]
 

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3672cc9eef0e6679d3010e2c132eedebe9ecd595d2316cd3766f1e7577964128"
+            "sha256": "dc46466dbbfd9a016c0e9c62ca38d22c5fb7fc93cf7a6da8962f0dd7f691ab61"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -166,6 +166,14 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==3.10"
+        },
+        "langdetect": {
+            "hashes": [
+                "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a",
+                "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0"
+            ],
+            "index": "pypi",
+            "version": "==1.0.9"
         },
         "mastodon.py": {
             "hashes": [
