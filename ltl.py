@@ -31,9 +31,11 @@ MISSKEY_SOFTWARE_NAMES = [
   'sharkey',
 ]
 
+# 小文字に変換したソフトウェア名のセット
 LOWER_MASTODON_SOFTWARE_NAMES = set(name.lower() for name in MASTODON_SOFTWARE_NAMES)
 LOWER_MISSKEY_SOFTWARE_NAMES = set(name.lower() for name in MISSKEY_SOFTWARE_NAMES)
 
+# JSONファイルにデータを保存
 def save_json(data, domain):
   os.makedirs(f'local_timelines/{domain}', exist_ok=True)
   date_str = datetime.now().strftime('%Y%m%d%H%M%S')
@@ -41,6 +43,7 @@ def save_json(data, domain):
   with open(filename, 'w', encoding='utf-8') as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 
+# JSONファイルを読み込む
 def load_json(filepath):
   with open(filepath, 'r', encoding='utf-8') as f:
     return json.load(f)
