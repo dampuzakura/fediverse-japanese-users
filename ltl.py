@@ -5,6 +5,7 @@ from datetime import datetime
 from mastodon import Mastodon
 from misskey import Misskey
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Mastodon互換のソフトウェア名
 MASTODON_SOFTWARE_NAMES = [
@@ -122,15 +123,16 @@ def main():
   servers = load_json(servers_file)
   errors = []
 
-  for server in tqdm(servers):
-    domain = server.get('domain', '')
-    software_name = server.get('software', {}).get('name', '')
-    err = fetch_and_save_local_timeline(domain, software_name, 500)
-    if err:
-      errors.append({
-        'domain': domain,
-        'error': str(err),
-      })
+  with ThreadPoolExecutor(max_workers=10) as executor:
+    future_to_server = {executor.submit(fetch_and_save_local_timeline, server.get('domain', ''), server.get('software', {}).get('name', ''), 500): server for server in servers}
+    for future in tqdm(as_completed(future_to_server), total=len(servers)):
+      server = future_to_server[future]
+      err = future.result()
+      if err:
+        errors.append({
+          'domain': server.get('domain', ''),
+          'error': str(err),
+        })
 
   save_json(errors, 'errors')
 
