@@ -43,6 +43,7 @@ def save_json(data, domain):
   filename = f'local_timelines/{domain}/{date_str}.json'
   with open(filename, 'w', encoding='utf-8') as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
+    return filename
 
 # JSONファイルを読み込む
 def load_json(filepath):
@@ -111,8 +112,8 @@ def fetch_and_save_local_timeline(domain, software_name, posts_length):
     err = e
 
   finally:
-    save_json(timelines, domain)
-    return err
+    filename = save_json(timelines, domain)
+    return filename, err
 
 def main():
   if len(sys.argv) < 2:
@@ -121,20 +122,39 @@ def main():
 
   servers_file = sys.argv[1]
   servers = load_json(servers_file)
-  errors = []
+  error = []
+  success = []
 
-  with ThreadPoolExecutor(max_workers=10) as executor:
-    future_to_server = {executor.submit(fetch_and_save_local_timeline, server.get('domain', ''), server.get('software', {}).get('name', ''), 500): server for server in servers}
-    for future in tqdm(as_completed(future_to_server), total=len(servers)):
-      server = future_to_server[future]
-      err = future.result()
-      if err:
-        errors.append({
-          'domain': server.get('domain', ''),
-          'error': str(err),
-        })
+  # サーバーを処理する関数
+  def process_server(server):
+    domain = server.get('domain', '')
+    software_name = server.get('software', {}).get('name', '')
+    posts_length = 500
 
-  save_json(errors, 'errors')
+    # ローカルタイムラインを取得して保存
+    filename, err = fetch_and_save_local_timeline(domain, software_name, posts_length)
+
+    # エラーが発生した場合、エラーメッセージを返す
+    if err:
+      error.append({
+        'domain': domain,
+        'error': str(err),
+      })
+    else:
+      success.append({
+        'domain': domain,
+        'path': filename,
+      })
+
+  # スレッドプールを使用して並列処理
+  with ThreadPoolExecutor(max_workers=30) as executor:
+    # サーバーごとに処理を実行し、エラーがあればリストに追加
+    futures = [executor.submit(process_server, server) for server in servers]
+    for future in tqdm(as_completed(futures), total=len(futures)):
+      future.result()
+
+  save_json(error, 'error')
+  save_json(success, 'success')
 
 if __name__ == '__main__':
   main()
